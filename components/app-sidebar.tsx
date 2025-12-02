@@ -381,6 +381,7 @@ import {
 import { toast } from "sonner";
 import { logout } from "@/service/authService";
 import { useUserProfileQuery } from "@/redux/feature/userSlice";
+import Link from "next/link";
 
 interface MenuItem {
   id: string;
@@ -393,8 +394,8 @@ function Sidebar() {
   const [role, setRole] = useState<string | null>(null);
   const [expandedCategory, setExpandedCategory] = useState(false);
 
-  const {data} = useUserProfileQuery(undefined);
-  console.log(data?.data,'=============!!')
+  const { data } = useUserProfileQuery(undefined);
+  // console.log(data?.data, '=============!!')
 
   // ✔ Hooks must run FIRST
   const pathname = usePathname();
@@ -440,14 +441,13 @@ function Sidebar() {
   ];
 
   const subCategories = [
-    { id: "food", label: "Food" },
-    { id: "drinks", label: "Drinks" },
-    { id: "snacks", label: "Snacks" },
+    { id: "category", label: "Category", link: "/category" },
+    { id: "sub-category", label: "Sub Category", link: "/category/sub-category" },
   ];
 
   const menuItems =
     // role === "super-admin" ? superAdminMenu : role === data?.data?.role ? vendorMenu : [];
-    data?.data?.role === 'ADMIN' ? superAdminMenu : data?.data?.role === "VENDOR"  ? vendorMenu : [];
+    data?.data?.role === 'ADMIN' ? superAdminMenu : data?.data?.role === "VENDOR" ? vendorMenu : [];
 
   const isAnySubCategoryActive = subCategories.some((s) => s.id === typeParam);
 
@@ -482,11 +482,10 @@ function Sidebar() {
               <button
                 key={item.id}
                 onClick={() => router.push(item.href)}
-                className={`w-full px-4 py-4 flex items-center mb-4 gap-3 text-sm rounded-r-lg font-medium transition-colors ${
-                  active
-                    ? "bg-[#89B12C] text-white"
-                    : "text-[#333333] bg-[#E1E1E1] hover:bg-[#e1e1e1]/90"
-                }`}
+                className={`w-full px-4 py-4 flex items-center mb-4 gap-3 text-sm rounded-r-lg font-medium transition-colors ${active
+                  ? "bg-[#89B12C] text-white"
+                  : "text-[#333333] bg-[#E1E1E1] hover:bg-[#e1e1e1]/90"
+                  }`}
               >
                 <Icon size={18} />
                 {item.label}
@@ -498,34 +497,52 @@ function Sidebar() {
           {data?.data?.role === "VENDOR" && (
             <Collapsible open={expandedCategory} onOpenChange={setExpandedCategory}>
               <CollapsibleTrigger
-                className={`w-full px-4 py-3 flex items-center gap-3 text-sm rounded-r-lg ${
-                  isAnySubCategoryActive
-                    ? "bg-[#89B12C] text-white"
-                    : "bg-[#E1E1E1] text-black hover:bg-[#e1e1e1]/90"
-                }`}
+                className={`w-full px-4 py-3 flex items-center gap-3 text-sm rounded-r-lg ${isAnySubCategoryActive
+                  ? "bg-[#89B12C] text-white"
+                  : "bg-[#E1E1E1] text-black hover:bg-[#e1e1e1]/90"
+                  }`}
               >
                 <Grid3x3 size={18} /> Category
                 <ChevronDown
-                  className={`ml-auto transition-transform ${
-                    expandedCategory ? "rotate-180" : ""
-                  }`}
+                  className={`ml-auto transition-transform ${expandedCategory ? "rotate-180" : ""
+                    }`}
                 />
               </CollapsibleTrigger>
 
-              <CollapsibleContent className="bg-[#E1E1E1] border-t border-gray-600">
+              {/* <CollapsibleContent className="bg-[#E1E1E1] border-t border-gray-600">
                 {subCategories.map((sub) => (
-                  <button
-                    key={sub.id}
-                    onClick={() => handleSubCategoryClick(sub.id)}
-                    className={`w-full px-8 py-4 text-xs text-left ${
-                      sub.id === typeParam
+                  <Link key={sub.id} href={sub?.link}>
+                    <button
+                      key={sub.id}
+                      onClick={() => handleSubCategoryClick(sub.id)}
+                      className={`w-full px-8 py-4 text-xs text-left ${sub.id === typeParam
                         ? "bg-[#B9D774] text-[#333333]"
-                        : "hover:bg-[#E1E1E1]/90"
-                    }`}
-                  >
-                    • {sub.label}
-                  </button>
+                        : "hover:bg-[#E1E1E1]/90 text-black"
+                        }`}
+                    >
+                      {sub.label}
+                    </button>
+                  </Link>
                 ))}
+              </CollapsibleContent> */}
+              <CollapsibleContent className="bg-[#E1E1E1] border-t border-gray-600">
+                {subCategories.map((sub) => {
+                  const isActive = pathname === sub.link; // check active link
+
+                  return (
+                    <Link key={sub.id} href={sub.link}>
+                      <button
+                        onClick={() => handleSubCategoryClick(sub.id)}
+                        className={`w-full px-8 py-4 text-xs text-left ${isActive
+                            ? "bg-[#B9D774] text-[#333333]" // active tab
+                            : "hover:bg-[#E1E1E1]/90 text-black"
+                          }`}
+                      >
+                        {sub.label}
+                      </button>
+                    </Link>
+                  );
+                })}
               </CollapsibleContent>
             </Collapsible>
           )}
