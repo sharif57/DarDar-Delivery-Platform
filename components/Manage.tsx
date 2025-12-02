@@ -3,151 +3,84 @@
 import { Suspense, useState } from "react"
 import { useRouter } from "next/navigation"
 import { ArrowLeft, RotateCw, Search, ChevronDown, Plus, Edit2, Trash2, RefreshCw } from "lucide-react"
+import { useAllProductListQuery } from "@/redux/feature/productSlice"
+import Link from "next/link"
 
-interface Product {
-  id: string
-  name: string
-  image: string
-  weight: string
-  category: string
-  price: string
-  date: string
-  store: number
-  status: "Available" | "unavailable" | "Short Stock"
+
+
+export interface Product {
+  id: number;
+  name: string;
+  description: string;
+  shop_name: string;
+  shop_image: string;
+  category: number;
+  subcategory: number;
+  image_1: string;
+  image_2: string;
+  image_3: string;
+  currency: string;
+  price: string;
+  quantity: string;
+  delivery_fee: string;
+  created_at: string;
+  updated_at: string;
+  vendor: number;
+  shop_info: ShopInfo;
+  vendor_subcategories: VendorSubcategory[];
+  is_active: boolean;
 }
+
+export interface ShopInfo {
+  id: number;
+  shop_name: string;
+  shop_image: string;
+  shop_license: string;
+  shop_type: string;
+  shop_address: string;
+  phone_number: string;
+  rating: number;
+  total_rating_count: number;
+}
+
+export interface VendorSubcategory {
+  id: number;
+  name: string;
+  image: string;
+  vendor: number;
+  category: number;
+  category_name: string;
+}
+
+
 
 export default function Manage() {
   const router = useRouter()
   const [searchTerm, setSearchTerm] = useState("")
   const [selectedCategory, setSelectedCategory] = useState("All")
-  const [products, setProducts] = useState<Product[]>([
-    {
-      id: "#12333",
-      name: "Cucumber",
-      image: "🥒",
-      weight: "500-600gm",
-      category: "Foods",
-      price: "$15",
-      date: "05/12/2024",
-      store: 500,
-      status: "Available",
-    },
-    {
-      id: "#12333",
-      name: "Egg",
-      image: "🥚",
-      weight: "500-600gm",
-      category: "Foods",
-      price: "$15",
-      date: "05/1/2024",
-      store: 50,
-      status: "unavailable",
-    },
-    {
-      id: "#12333",
-      name: "Cake",
-      image: "🍰",
-      weight: "500-600gm",
-      category: "Foods",
-      price: "$15",
-      date: "05/12/2024",
-      store: 300,
-      status: "Available",
-    },
-    {
-      id: "#12333",
-      name: "Papaya",
-      image: "🧡",
-      weight: "500-600gm",
-      category: "Foods",
-      price: "$15",
-      date: "05/12/2024",
-      store: 2,
-      status: "Short Stock",
-    },
-    {
-      id: "#12333",
-      name: "Pineapple",
-      image: "🍍",
-      weight: "500-600gm",
-      category: "Foods",
-      price: "$15",
-      date: "05/12/2024",
-      store: 500,
-      status: "Available",
-    },
-    {
-      id: "#12333",
-      name: "Pineapple",
-      image: "🍌",
-      weight: "1kg-1.2kg",
-      category: "Foods",
-      price: "$10",
-      date: "05/12/2024",
-      store: 700,
-      status: "Available",
-    },
-    {
-      id: "#12333",
-      name: "Ice-cream",
-      image: "🍦",
-      weight: "500-600gm",
-      category: "Foods",
-      price: "$12",
-      date: "05/12/2024",
-      store: 800,
-      status: "Available",
-    },
-    {
-      id: "#12333",
-      name: "Mango",
-      image: "🥭",
-      weight: "1kg",
-      category: "Foods",
-      price: "$25",
-      date: "05/12/2024",
-      store: 900,
-      status: "Available",
-    },
-    {
-      id: "#12333",
-      name: "Orange",
-      image: "🍊",
-      weight: "1kg",
-      category: "Foods",
-      price: "$20",
-      date: "05/12/2024",
-      store: 100,
-      status: "Available",
-    },
-  ])
+  const { data, refetch } = useAllProductListQuery(undefined);
+  const productss = data?.data
+  const IMAGE = process.env.NEXT_PUBLIC_IMAGE_URL
 
-  const filteredProducts = products.filter((product) => {
-    const matchesSearch = product.name.toLowerCase().includes(searchTerm.toLowerCase())
-    const matchesCategory = selectedCategory === "All" || product.category === selectedCategory
-    return matchesSearch && matchesCategory
-  })
+
+  const [rotate, setRotate] = useState(false);
+
+  const handleRefresh = () => {
+    setRotate(true);     
+    refetch();            
+
+    setTimeout(() => setRotate(false), 600); 
+  };
+
+
 
   const handleDelete = (id: string, index: number) => {
-    setProducts(products.filter((_, i) => i !== index))
   }
 
   const handleEdit = (product: Product) => {
     console.log("Edit product:", product)
   }
 
-  const getStatusColor = (status: string) => {
-    switch (status) {
-      case "Available":
-        return "bg-green-100 text-green-700"
-      case "unavailable":
-        return "bg-red-100 text-red-700"
-      case "Short Stock":
-        return "bg-purple-100 text-purple-700"
-      default:
-        return "bg-gray-100 text-gray-700"
-    }
-  }
 
   return (
     <div className="p-8 ">
@@ -161,11 +94,19 @@ export default function Manage() {
             <h1 className="text-[16px] font-medium text-[#333333]">Manage Products</h1>
           </div>
           <div className="flex items-center gap-4">
-            <button className="flex items-center gap-2 bg-[#F4F5F7] p-2 rounded-lg text-gray-600 hover:text-gray-900 transition-colors">
+            <button
+              onClick={handleRefresh}
+              className="flex items-center gap-2 bg-[#F4F5F7] p-2 rounded-lg text-gray-600 hover:text-gray-900 transition-colors"
+            >
               <span className="text-[16px] font-normal">Data Refresh</span>
-              <RefreshCw className="text-[#5B52A3]"  size={18} />
+              <RefreshCw
+                size={18}
+                className={`text-[#5B52A3] transition-transform duration-500 ${rotate ? "rotate-[360deg]" : ""
+                  }`}
+              />
             </button>
-            <span className="text-[16px] font-normal bg-white p-2 rounded text-gray-600">March 25,2024 10:43 Am</span>
+
+            {/* <span className="text-[16px] font-normal bg-white p-2 rounded text-gray-600">March 25,2024 10:43 Am</span> */}
           </div>
         </div>
 
@@ -195,55 +136,65 @@ export default function Manage() {
           </div>
 
           {/* Add Products Button */}
-          <button className="flex items-center gap-2 px-6 py-2 bg-[#7CC84E] text-white rounded hover:bg-[#7CC84E]/90 transition-colors font-medium">
+          <Link href="/add-products" className="flex items-center gap-2 px-6 py-2 bg-[#7CC84E] text-white rounded hover:bg-[#7CC84E]/90 transition-colors font-medium">
             <span>Add Products</span>
             <Plus size={18} />
-          </button>
+          </Link>
         </div>
 
         {/* Stats Section */}
         <div className="flex items-center gap-6 mb-6 text-sm">
           <span className="text-gray-700">
-            <span className="font-medium text-[#5B52A3]">Total Products:</span> <span className="text-gray-600">All (160)</span>
+            <span className="font-medium text-[#5B52A3]">Total Products:</span> <span className="text-gray-600">All ({data?.products_count})</span>
           </span>
-          <span className="text-gray-700">
+          {/* <span className="text-gray-700">
             <span className="font-medium text-[#5B52A3]">Publish:</span> <span className="text-gray-600">(18)</span>
-          </span>
+          </span> */}
         </div>
 
         {/* Products Table */}
         <div className="bg-white rounded-lg shadow overflow-hidden">
           <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead className="bg-gray-50 border-b border-gray-200">
+            <table className="w-full text-center">
+              <thead className="bg-gray-50 border-b border-gray-200 text-center">
                 <tr>
-                  <th className="px-6 py-4 text-left text-lg font-medium text-[#6B6B6B]">S.no</th>
-                  <th className="px-6 py-4 text-left text-lg font-medium text-[#6B6B6B]">Products Name</th>
-                  <th className="px-6 py-4 text-left text-lg font-medium text-[#6B6B6B]">weight</th>
-                  <th className="px-6 py-4 text-left text-lg font-medium text-[#6B6B6B]">Category</th>
-                  <th className="px-6 py-4 text-left text-lg font-medium text-[#6B6B6B]">Price</th>
-                  <th className="px-6 py-4 text-left text-lg font-medium text-[#6B6B6B]">Date</th>
-                  <th className="px-6 py-4 text-left text-lg font-medium text-[#6B6B6B]">Store</th>
-                  <th className="px-6 py-4 text-left text-lg font-medium text-[#6B6B6B]">Status</th>
-                  <th className="px-6 py-4 text-left text-lg font-medium text-[#6B6B6B]">Action</th>
+                  <th className="px-6 py-4 text- text-lg font-medium text-[#6B6B6B]">S.no</th>
+                  <th className="px-6 py-4 text- text-lg font-medium text-[#6B6B6B]">Products Name</th>
+                  <th className="px-6 py-4 text- text-lg font-medium text-[#6B6B6B]">Shop Name</th>
+                  <th className="px-6 py-4 text- text-lg font-medium text-[#6B6B6B]">Category</th>
+                  <th className="px-6 py-4 text- text-lg font-medium text-[#6B6B6B]">Price</th>
+                  <th className="px-6 py-4 text- text-lg font-medium text-[#6B6B6B]">Date</th>
+                  <th className="px-6 py-4 text- text-lg font-medium text-[#6B6B6B]">Store</th>
+                  <th className="px-6 py-4 text- text-lg font-medium text-[#6B6B6B]">Status</th>
+                  <th className="px-6 py-4 text- text-lg font-medium text-[#6B6B6B]">Action</th>
                 </tr>
               </thead>
               <tbody>
-                {filteredProducts.map((product, idx) => (
-                  <tr key={idx} className="border-b border-gray-200 hover:bg-gray-50 transition-colors">
-                    <td className="px-6 py-4 text-[16px] text-[#919191]">{idx + 1}</td>
+                {productss?.map((product: Product, index: number) => (
+                  <tr key={product.id} className="border-b border-gray-200 hover:bg-gray-50 transition-colors">
+                    <td className="px-6 py-4 text-[16px] text-[#919191]">{index + 1}</td>
                     <td className="px-6 py-4 text-sm font-medi[16px] text-[#919191] flex items-center gap-3">
-                      <span className="text-2xl">{product.image}</span>
+                      <img src={IMAGE + product.image_1} alt={product.name} className="w-10 h-10 object-cover rounded-full" />
                       <span>{product.name}</span>
                     </td>
-                    <td className="px-6 py-4 text-[16px] text-[#919191]">{product.weight}</td>
+                    <td className="px-6 py-4 text-[16px] text-[#919191]">{product.shop_name}</td>
                     <td className="px-6 py-4 text-[16px] text-[#919191]">{product.category}</td>
                     <td className="px-6 py-4 text-[16px] text-[#919191]">{product.price}</td>
-                    <td className="px-6 py-4 text-[16px] text-[#919191]">{product.date}</td>
-                    <td className="px-6 py-4 text-[16px] text-[#919191]">{product.store}</td>
-                    <td className="px-6 py-4 text-sm">
-                      <span className={`px-3 py-1 rounded text-xs font-medium ${getStatusColor(product.status)}`}>
-                        {product.status}
+                    <td className="px-6 py-4 text-[16px] text-[#919191]">{new Date(product.created_at).toLocaleDateString("en-US", {
+                      day: "2-digit",
+                      month: "short",
+                      year: "numeric",
+                    })}
+                    </td>
+                    <td className="px-6 py-4 text-[16px] text-[#919191]">{product.quantity}</td>
+                    <td className="px-6 py-4 text-base">
+                      <span
+                        className={`px-3 py-1 rounded text-xs font-medium ${product.is_active
+                          ? "bg-green-100 text-green-700"
+                          : "bg-red-100 text-red-700"
+                          }`}
+                      >
+                        {product.is_active ? "Available" : "Unavailable"}
                       </span>
                     </td>
                     <td className="px-6 py-4 text-sm flex items-center gap-3">
@@ -254,7 +205,7 @@ export default function Manage() {
                         <Edit2 size={16} />
                       </button>
                       <button
-                        onClick={() => handleDelete(product.id, idx)}
+                        // onClick={() => handleDelete(product.id)}
                         className="p-1 text-red-600 hover:bg-red-50 rounded transition-colors"
                       >
                         <Trash2 size={16} />
