@@ -2,13 +2,14 @@
 "use client"
 
 import { XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, AreaChart, Area } from "recharts"
-import {  useEffect, useState } from "react"
+import { useEffect, useState } from "react"
 import TopProducts from "@/components/top-products"
 import ProductsList from "@/components/products-list"
 import AnalyticsPage from "@/components/AnalyticsPage"
 import StartCard from "@/components/starts-card"
 import History from "@/components/history"
 import VendorRequestTable from "@/components/vendor-request"
+import { useUserProfileQuery } from "@/redux/feature/userSlice"
 
 const salesData = [
   { month: "Jan", sales: 40 },
@@ -27,13 +28,17 @@ const salesData = [
 
 
 export default function Dashboard() {
-  const [role, setRole] = useState("");
-  useEffect(() => {
-    const storedRole = localStorage.getItem("userRole");
-    if (storedRole) {
-      setRole(storedRole);
-    }
-  }, [])
+
+  const { data } = useUserProfileQuery(undefined);
+  console.log(data?.data, '=============!!')
+  const role = data?.data?.role
+  // const [role, setRole] = useState("");
+  // useEffect(() => {
+  //   const storedRole = localStorage.getItem("userRole");
+  //   if (storedRole) {
+  //     setRole(storedRole);
+  //   }
+  // }, [])
 
   return (
     <div className="p-8  min-h-screen">
@@ -41,7 +46,7 @@ export default function Dashboard() {
 
         <div className="mb-8">
           {
-            role === 'vendor' ? <StartCard /> : <History />
+            role  === 'VENDOR' ? <StartCard /> : <History />
           }
         </div>
 
@@ -76,7 +81,7 @@ export default function Dashboard() {
 
           {/* Top Products */}
           {
-            role === "vendor" ? (
+            role === "VENDOR" ? (
               <div className="bg-[#F4F5F7] rounded-lg  p-6">
                 <TopProducts />
               </div>
@@ -90,7 +95,7 @@ export default function Dashboard() {
 
         {/* Products List */}
         {
-          role === "vendor" ? <ProductsList /> : <VendorRequestTable />
+          role === "VENDOR" ? <ProductsList /> : <VendorRequestTable />
         }
         {/* <ProductsList />
         <VendorRequestTable /> */}
