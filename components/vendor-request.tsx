@@ -1,57 +1,16 @@
 /* eslint-disable @next/next/no-img-element */
 'use client';
 
+import { useAllVendorRequestQuery } from "@/redux/feature/vendorSlice";
 
-interface Vendor {
-  id: number;
-  name: string;
-  email: string;
-  phone: string;
-  location: string;
-  type: 'Grocery' | 'Restaurant';
-  avatar: string;
-}
 
-const vendors: Vendor[] = [
-  {
-    id: 1,
-    name: 'DZ Bra Panties Shop',
-    email: 'redaniel@gmail.com',
-    phone: '+1 (239) 555-0108',
-    location: '0 / 77 Purdy Crescent...',
-    type: 'Grocery',
-    avatar: 'https://i.pravatar.cc/40?u=dzbra',
-  },
-  {
-    id: 2,
-    name: "Nature's Cart",
-    email: 'zitka@mail.ru',
-    phone: '+1 (470) 918 8511',
-    location: '09 Arnulfo Crossing, B...',
-    type: 'Restaurant',
-    avatar: 'https://i.pravatar.cc/40?u=nature',
-  },
-  {
-    id: 3,
-    name: 'Flavors & Feasts',
-    email: 'seema@gmail.com',
-    phone: '+1 (704) 555-0127',
-    location: '3 / 621 Juvenal Ridge...',
-    type: 'Grocery',
-    avatar: 'https://i.pravatar.cc/40?u=flavors',
-  },
-  {
-    id: 4,
-    name: 'Taste Retreat',
-    email: 'fzaaaa@gmail.com',
-    phone: '+1 (302) 555-0107',
-    location: '208 Olson Boulevard,...',
-    type: 'Restaurant',
-    avatar: 'https://i.pravatar.cc/40?u=taste',
-  },
-];
 
 export default function VendorRequestTable() {
+
+  const { data } = useAllVendorRequestQuery(undefined);
+
+  const IMAGE =process.env.NEXT_PUBLIC_IMAGE_URL
+
   return (
     <>
       <div className=" py-8 ">
@@ -83,39 +42,39 @@ export default function VendorRequestTable() {
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-200">
-                {vendors.map((vendor) => (
-                  <tr key={vendor.id} className="hover:bg-gray-50 transition-colors">
+                {data?.data?.map((vendor: any, index: number) => (
+                  <tr key={vendor?.id} className="hover:bg-gray-50 transition-colors">
                     <td className="px-6 py-5 text-center whitespace-nowrap">
-                      <span className="text-sm text-gray-900 font-medium">{vendor.id}.</span>
+                      <span className="text-sm text-gray-900 font-medium">{index + 1}.</span>
                     </td>
 
                     <td className="px-6 py-5 text-center">
                       <div className="flex items-center justify-center gap-3">
                         <img
-                          src={vendor.avatar}
-                          alt={vendor.name}
+                          src={ IMAGE + vendor?.image}
+                          alt={vendor?.full_name}
                           className="w-10 h-10 rounded-full object-cover ring-2 ring-gray-100"
                         />
                         <div className="space-y-2">
-                          <p className="text-sm font-medium text-gray-900">{vendor.name}</p>
-                          <p className="text-xs text-gray-500">{vendor.email}</p>
+                          <p className="text-sm font-medium text-gray-900">{vendor?.full_name}</p>
+                          <p className="text-xs text-gray-500">{vendor?.email}</p>
                         </div>
                       </div>
                     </td>
 
                     <td className="px-6 py-5 text-center">
-                      <p className="text-sm text-gray-900 font-medium">{vendor.phone}</p>
+                      <p className="text-sm text-gray-900 font-medium">{vendor?.phone_number}</p>
                     </td>
 
                     <td className="px-6 py-5 text-center">
-                      <p className="text-sm text-[#333333] max-w-xs truncate">{vendor.location}</p>
+                      <p className="text-sm text-[#333333] max-w-xs truncate">{vendor?.shop_address}</p>
                     </td>
 
                     <td className="px-6 py-5 text-center">
                       <span
                         className={`inline-flex px-3 py-1 rounded-full text-xs font-medium`}
                       >
-                        {vendor.type}
+                        {vendor?.role}
                       </span>
                     </td>
 

@@ -7,6 +7,7 @@ import { Eye, EyeOff } from "lucide-react"
 import { useRouter } from "next/navigation";
 import { useLoginMutation } from "@/redux/feature/authSlice";
 import { toast } from "sonner";
+import { saveTokens } from "@/service/authService";
 
 export default function LoginForm() {
   const router = useRouter();
@@ -29,7 +30,7 @@ export default function LoginForm() {
       // Save selected role in localStorage
       localStorage.setItem("accessToken", response?.access_token);
       localStorage.setItem("userRole", response?.data?.role);
-
+      await saveTokens(response?.access_token);
       console.log(response, 'response')
       router.push("/")
       setIsLoading(false)

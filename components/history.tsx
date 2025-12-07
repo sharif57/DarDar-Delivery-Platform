@@ -1,11 +1,15 @@
 "use client";
 
+import { useDashboardQuery } from "@/redux/feature/dashboardSlice";
+
 export default function History() {
+  const { data } = useDashboardQuery(undefined);
+  console.log(data?.data, 'dashboard')
   const stats = [
-    { title: "Total Orders", value: 125 },
-    { title: "Total Grocery", value: 500 },
-    { title: "Total Restaurant", value: 300 },
-    { title: "Total Complete Order", value: 200 },
+    { title: "Total Orders", value: data?.total_orders || 0 },
+    { title: "Total Grocery", value: data?.total_grocery || 0 },
+    { title: "Total Restaurant", value: data?.total_restaurent || 0 },
+    { title: "Total Complete Order", value: data?.total_delivered_orders || 0 },
   ];
 
   return (

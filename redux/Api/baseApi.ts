@@ -30,7 +30,9 @@ export const baseApi = createApi({
     "Category",
     "Subcategory",
     "Banner",
-    "Feedback"
+    "Feedback",
+    "Dashboard",
+    "Vendor"
 
   ],
   endpoints: () => ({}),
