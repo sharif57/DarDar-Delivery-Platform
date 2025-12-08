@@ -91,7 +91,15 @@ export default function VendorRequestTable() {
                   </tr>
                 ))}
               </tbody>
+
             </table>
+            <div className="flex items-center justify-center">
+              {data?.data.length === 0 && (
+                <p className="text-center text-gray-500 py-6">
+                  No Vendors Found
+                </p>
+              )}
+            </div>
           </div>
         </div>
       </div>

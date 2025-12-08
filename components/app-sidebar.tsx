@@ -436,7 +436,7 @@ function Sidebar() {
     { id: "make-admin", label: "Make Vendor", icon: User, href: "/make-admin" },
     { id: "rider-request", label: "Rider Request", icon: Bike, href: "/rider-request" },
     { id: "feedback", label: "Feedback", icon: MessageSquare, href: "/feedback" },
-    { id: "banner", label: "Banner Section", icon: ImageIcon, href: "/banner" },
+    // { id: "banner", label: "Banner Section", icon: ImageIcon, href: "/banner" },
     { id: "settings", label: "Settings", icon: Settings, href: "/settings" },
   ];
 

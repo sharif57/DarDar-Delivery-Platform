@@ -57,7 +57,15 @@ export const vendorApi = baseApi.injectEndpoints({
             invalidatesTags: ["Rider"],
         }),
 
+        totalOrders: builder.query({
+            query: () => ({
+                url: "/order/",
+                method: "GET",
+            }),
+            providesTags: ["Order"],
+        }),
+
     }),
 });
 
-export const { useAllVendorRequestQuery, useAllRiderRequestQuery, useAcceptVendorRequestMutation, useCancelVendorRequestMutation, useAcceptRiderRequestMutation , useCancelRiderRequestMutation } = vendorApi;
+export const { useAllVendorRequestQuery, useAllRiderRequestQuery, useAcceptVendorRequestMutation, useCancelVendorRequestMutation, useAcceptRiderRequestMutation, useCancelRiderRequestMutation , useTotalOrdersQuery } = vendorApi;

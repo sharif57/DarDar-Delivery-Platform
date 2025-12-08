@@ -167,7 +167,7 @@ export default function AllVendorsTable() {
                     </td>
 
                   </tr>
-                ))}
+                ))} 
               </tbody>
             </table>
 

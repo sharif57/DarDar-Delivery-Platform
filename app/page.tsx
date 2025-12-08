@@ -15,7 +15,7 @@ import { useDashboardQuery } from "@/redux/feature/dashboardSlice"
 
 export default function Dashboard() {
 
-  const { data: dashboard, isFetching } = useDashboardQuery(undefined);
+  const { data: dashboard, isLoading } = useDashboardQuery(undefined);
 
   const { data } = useUserProfileQuery(undefined);
   const role = data?.data?.role
@@ -53,7 +53,7 @@ export default function Dashboard() {
     }))
     .sort((a, b) => a.date.getTime() - b.date.getTime());
 
-  if (isFetching) {
+  if (isLoading) {
     return <div className="flex items-center justify-center h-screen">Loading...</div>
   }
 
