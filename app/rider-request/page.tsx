@@ -1,19 +1,16 @@
-
-
 "use client";
 
 import { useState } from "react";
-import { ArrowLeft } from "lucide-react";
+import { Eye, ArrowLeft } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useAcceptVendorRequestMutation, useAllVendorRequestQuery, useCancelVendorRequestMutation } from "@/redux/feature/vendorSlice";
+import { useAcceptRiderRequestMutation, useAllRiderRequestQuery, useCancelRiderRequestMutation } from "@/redux/feature/vendorSlice";
 import { toast } from "sonner";
 
 export default function AllVendorsTable() {
   const router = useRouter();
-  const { data, refetch, isLoading } = useAllVendorRequestQuery(undefined);
-
-  const [acceptVendorRequest] = useAcceptVendorRequestMutation();
-  const [cancelVendorRequest] = useCancelVendorRequestMutation();
+  const { data, refetch } = useAllRiderRequestQuery(undefined);
+  const [acceptRiderRequest] = useAcceptRiderRequestMutation();
+  const [cancelRiderRequest] = useCancelRiderRequestMutation();
 
   const IMAGE = process.env.NEXT_PUBLIC_IMAGE_URL;
 
@@ -32,36 +29,31 @@ export default function AllVendorsTable() {
 
   const [vendors, setVendors] = useState(apiVendors);
 
+  const handleAccept = async (id: number) => {
+    try {
+      const res = await acceptRiderRequest(id).unwrap();
+      toast.success(res?.message || "Vendor approved!");
+      refetch();
+      window.location.reload();
+    } catch (error: any) {
+      toast.error(error?.data?.message || "Failed to approve vendor");
+    }
+  };
+
+  const handleCancel = async (id: number) => {
+    try {
+      const res = await cancelRiderRequest(id).unwrap();
+      toast.success(res?.message || "Vendor Rejected!");
+      refetch();
+      window.location.reload();
+    } catch (error: any) {
+      toast.error(error?.data?.message || "Failed to approve vendor");
+    }
+  };
+
   // If API updates → sync UI
   if (vendors.length === 0 && apiVendors.length > 0) {
     setVendors(apiVendors);
-  }
-
-
-  const ApprovedVendorRequest = async (id: number) => {
-    try {
-      const res = await acceptVendorRequest(id).unwrap();
-      toast.success(res?.message || "Vendor approved!");
-      refetch();
-      window.location.reload();
-    } catch (error: any) {
-      toast.error(error?.data?.message || "Failed to approve vendor");
-    }
-  };
-
-  const CancelVendorRequest = async (id: number) => {
-    try {
-      const res = await cancelVendorRequest(id).unwrap();
-      toast.success(res?.message || "Vendor approved!");
-      refetch();
-      window.location.reload();
-    } catch (error: any) {
-      toast.error(error?.data?.message || "Failed to approve vendor");
-    }
-  };
-
-  if (isLoading) {
-    return <p className="text-center text-2xl font-semibold h-screen flex justify-center items-center"  >Loading...</p>
   }
 
 
@@ -77,15 +69,15 @@ export default function AllVendorsTable() {
           >
             <ArrowLeft className="w-5 h-5" />
           </button>
-          <h1 className="text-xl font-medium text-gray-800">All Vendors</h1>
+          <h1 className="text-xl font-medium text-gray-800">All Rider Request</h1>
         </div>
 
         {/* Table */}
         <div className="overflow-hidden">
           <div className="overflow-x-auto">
-            <table className="w-full min-w-[900px] text-center">
+            <table className="w-full min-w-[900px]">
               <thead>
-                <tr className="bg-gray-50 border-b border-gray-200 text-center">
+                <tr className="bg-gray-50 border-b border-gray-200">
                   {[
                     "S no.",
                     "Name",
@@ -104,7 +96,7 @@ export default function AllVendorsTable() {
                 </tr>
               </thead>
 
-              <tbody className="divide-y divide-gray-100">
+              <tbody className="divide-y divide-gray-100 text-center">
                 {vendors.map((vendor: any, index: number) => (
                   <tr
                     key={vendor.id}
@@ -149,23 +141,17 @@ export default function AllVendorsTable() {
                       {vendor.email}
                     </td>
 
-                    <td className="px-6 py-5">
+                    {/* Actions */}
+                    <td className="px-6 py-4">
                       <div className="flex items-center justify-center gap-2">
-                        <button onClick={() => ApprovedVendorRequest(vendor?.id)} className="inline-flex items-center gap-1.5 px-4 py-2 bg-[#479502] hover:bg- text-white text-sm font-medium rounded-full shadow-sm transition-all hover:shadow-md">
+                        <button onClick={() => handleAccept(vendor.id)} className="inline-flex items-center gap-1.5 px-4 py-2 bg-[#479502] hover:bg- text-white text-sm font-medium rounded-full shadow-sm transition-all hover:shadow-md">
                           Approve
                         </button>
-                        <button onClick={() => CancelVendorRequest(vendor?.id)} className="inline-flex items-center gap-1.5 px-4 py-2 bg-[#C61E1E] hover:bg-[#C61E1E]/90 text-white text-sm font-medium rounded-full shadow-sm transition-all hover:shadow-md">
+                        <button onClick={() => handleCancel(vendor.id)}  className="inline-flex items-center gap-1.5 px-4 py-2 bg-[#C61E1E] hover:bg-[#C61E1E]/90 text-white text-sm font-medium rounded-full shadow-sm transition-all hover:shadow-md">
                           Cancel
                         </button>
                       </div>
-                      {/* <button
-                        onClick={() => viewVendor(vendor)}
-                        className="p-2 hover:bg-gray-200 rounded-full transition"
-                      >
-                        <Eye className="w-4 h-4 text-gray-600" />
-                      </button> */}
                     </td>
-
                   </tr>
                 ))}
               </tbody>
@@ -173,7 +159,7 @@ export default function AllVendorsTable() {
 
             {vendors.length === 0 && (
               <p className="text-center text-gray-500 py-6">
-                No Vendors Found
+                No Rider Found
               </p>
             )}
           </div>

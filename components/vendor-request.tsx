@@ -9,7 +9,7 @@ export default function VendorRequestTable() {
 
   const { data } = useAllVendorRequestQuery(undefined);
 
-  const IMAGE =process.env.NEXT_PUBLIC_IMAGE_URL
+  const IMAGE = process.env.NEXT_PUBLIC_IMAGE_URL
 
   return (
     <>
@@ -51,7 +51,7 @@ export default function VendorRequestTable() {
                     <td className="px-6 py-5 text-center">
                       <div className="flex items-center justify-center gap-3">
                         <img
-                          src={ IMAGE + vendor?.image}
+                          src={IMAGE + vendor?.image}
                           alt={vendor?.full_name}
                           className="w-10 h-10 rounded-full object-cover ring-2 ring-gray-100"
                         />

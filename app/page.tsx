@@ -2,7 +2,6 @@
 "use client"
 
 import { XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, AreaChart, Area } from "recharts"
-import { useEffect, useState } from "react"
 import TopProducts from "@/components/top-products"
 import ProductsList from "@/components/products-list"
 import AnalyticsPage from "@/components/AnalyticsPage"
@@ -12,25 +11,11 @@ import VendorRequestTable from "@/components/vendor-request"
 import { useUserProfileQuery } from "@/redux/feature/userSlice"
 import { useDashboardQuery } from "@/redux/feature/dashboardSlice"
 
-const salesData = [
-  { month: "Jan", sales: 40 },
-  { month: "Feb", sales: 60 },
-  { month: "Mar", sales: 50 },
-  { month: "Apr", sales: 80 },
-  { month: "May", sales: 70 },
-  { month: "Jun", sales: 90 },
-  { month: "Jul", sales: 70 },
-  { month: "Aug", sales: 85 },
-  { month: "Sep", sales: 75 },
-  { month: "Oct", sales: 95 },
-  { month: "Nov", sales: 110 },
-  { month: "Dec", sales: 60 },
-];
 
 
 export default function Dashboard() {
 
-  const { data: dashboard , isFetching } = useDashboardQuery(undefined);
+  const { data: dashboard, isFetching } = useDashboardQuery(undefined);
 
   const { data } = useUserProfileQuery(undefined);
   const role = data?.data?.role
@@ -42,7 +27,33 @@ export default function Dashboard() {
   //   }
   // }, [])
 
-  if(isFetching) {
+  // Prepare chart data
+  const groupedData = dashboard?.data?.reduce((acc: any, item: any) => {
+    const date = new Date(item.final_delivery_time);
+    const month = date.toLocaleString("en-US", { month: "short", year: "numeric" });
+
+    const fee = Number(item.admin_fee);
+
+    // If this month already exists → add
+    if (acc[month]) {
+      acc[month] += fee;
+    } else {
+      acc[month] = fee;
+    }
+
+    return acc;
+  }, {});
+
+
+  const chartData = Object.entries(groupedData || {})
+    .map(([month, totalFee]: any) => ({
+      month,
+      admin_fee: totalFee,
+      date: new Date(month),
+    }))
+    .sort((a, b) => a.date.getTime() - b.date.getTime());
+
+  if (isFetching) {
     return <div className="flex items-center justify-center h-screen">Loading...</div>
   }
 
@@ -63,10 +74,7 @@ export default function Dashboard() {
             <h2 className="text-lg font-semibold text-gray-900 mb-4">Sales Overview</h2>
 
             <ResponsiveContainer width="100%" height={300}>
-              <AreaChart data={dashboard?.data?.map((item: any) => ({
-                ...item,
-                month: new Date(item.final_delivery_time).toLocaleString("en-US", { month: "short" })
-              }))}>
+              <AreaChart data={chartData}>
                 <defs>
                   <linearGradient id="colorSales" x1="0" y1="0" x2="0" y2="1">
                     <stop offset="5%" stopColor="#30B200CF" stopOpacity={0.9} />
@@ -88,6 +96,7 @@ export default function Dashboard() {
                 />
               </AreaChart>
             </ResponsiveContainer>
+
           </div>
 
 

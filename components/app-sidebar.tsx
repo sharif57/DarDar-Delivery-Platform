@@ -433,7 +433,7 @@ function Sidebar() {
   const superAdminMenu: MenuItem[] = [
     { id: "dashboard", label: "Dashboard", icon: LayoutDashboard, href: "/" },
     { id: "total-order", label: "Total Order", icon: List, href: "/total-order" },
-    { id: "make-admin", label: "Make Admin", icon: User, href: "/make-admin" },
+    { id: "make-admin", label: "Make Vendor", icon: User, href: "/make-admin" },
     { id: "rider-request", label: "Rider Request", icon: Bike, href: "/rider-request" },
     { id: "feedback", label: "Feedback", icon: MessageSquare, href: "/feedback" },
     { id: "banner", label: "Banner Section", icon: ImageIcon, href: "/banner" },
