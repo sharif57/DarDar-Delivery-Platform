@@ -440,6 +440,7 @@ import { ChevronLeft, RefreshCw } from "lucide-react"
 import { Badge } from "@/components/ui/badge"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import { useTotalOrdersQuery } from "@/redux/feature/vendorSlice"
+import { toast } from "sonner"
 
 interface Order {
   id: number
@@ -502,6 +503,7 @@ export default function OrderPage() {
   const handleRefresh = () => {
     setIsRefreshing(true);
     refetch().finally(() => setIsRefreshing(false));
+    toast.success("Orders refreshed successfully!");
   }
 
   const orders = activeTab === "total" ? mappedTotalOrders : mappedCurrentOrders
@@ -553,27 +555,27 @@ export default function OrderPage() {
         {/* Table Container */}
         <div className="overflow-hidden rounded-lg bg-white shadow">
           <div className="overflow-x-auto">
-            <table className="w-full">
+            <table className="w-full text-center">
               {/* Table Header */}
               <thead>
                 <tr className="border-b border-gray-200 bg-gray-50">
-                  <th className="px-6 py-4 text-left text-[16px] font-medium text-[#333333]">S no.</th>
-                  <th className="px-6 py-4 text-left text-[16px] font-medium text-[#333333]">
+                  <th className="px-6 py-4 text- text-[16px] font-medium text-[#333333]">S no.</th>
+                  <th className="px-6 py-4 text- text-[16px] font-medium text-[#333333]">
                     {activeTab === "total" ? "Products Item" : "Products"}
                   </th>
-                  <th className="px-6 py-4 text-left text-[16px] font-medium text-[#333333]">Price</th>
-                  <th className="px-6 py-4 text-left text-[16px] font-medium text-[#333333]">Delivery Fee</th>
-                  <th className="px-6 py-4 text-left text-[16px] font-medium text-[#333333]">Quantity</th>
-                  <th className="px-6 py-4 text-left text-[16px] font-medium text-[#333333]">Shop Name</th>
+                  <th className="px-6 py-4 text- text-[16px] font-medium text-[#333333]">Price</th>
+                  <th className="px-6 py-4 text- text-[16px] font-medium text-[#333333]">Delivery Fee</th>
+                  <th className="px-6 py-4 text- text-[16px] font-medium text-[#333333]">Quantity</th>
+                  <th className="px-6 py-4 text- text-[16px] font-medium text-[#333333]">Shop Name</th>
                   {activeTab === "total" && (
-                    <th className="px-6 py-4 text-left text-[16px] font-medium text-[#333333]">Date</th>
+                    <th className="px-6 py-4 text- text-[16px] font-medium text-[#333333]">Date</th>
                   )}
-                  <th className="px-6 py-4 text-left text-[16px] font-medium text-[#333333]">Delivery Received By</th>
-                  <th className="px-6 py-4 text-left text-[16px] font-medium text-[#333333]">Action</th>
+                  <th className="px-6 py-4 text- text-[16px] font-medium text-[#333333]">Delivery Received By</th>
+                  <th className="px-6 py-4  text-[16px] font-medium text-[#333333]">Action</th>
                 </tr>
               </thead>
               {/* Table Body */}
-              <tbody>
+              <tbody className="text-center">
                 {orders.map((order: any, index: number) => (
                   <tr key={order.id} className="border-b border-gray-200 hover:bg-gray-50 transition-colors">
                     {/* Serial Number */}
