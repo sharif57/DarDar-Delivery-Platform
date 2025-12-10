@@ -301,7 +301,7 @@ import { toast } from "sonner";
   const isComplete = otp.every(d => d !== "");
 
   return (
-    <div className="min-h-screen  flex items-center justify-center p-4">
+    <div className="min-h-screen bg-[#89B12C] flex items-center justify-center p-4">
       <div className="bg-white rounded-2xl shadow-2xl p-8 w-full max-w-md transform transition-all hover:scale-[1.01]">
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold text-gray-900">Verify Your Email</h1>
@@ -342,7 +342,7 @@ import { toast } from "sonner";
           disabled={!isComplete || isLoading}
           className={`w-full py-4 px-6 rounded-lg font-medium text-white transition-all transform
             ${isComplete && !isLoading
-              ? 'bg-[#D69D21] hover:bg-[#D69D21]/90 hover:shadow-xl active:scale-95'
+              ? 'bg-[#DD5621] hover:bg-[#DD5621] disabled:bg-[#DD5621]/90 hover:shadow-xl active:scale-95'
               : 'bg-gray-400 cursor-not-allowed'
             }`}
         >

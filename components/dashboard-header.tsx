@@ -6,7 +6,7 @@ import { usePathname } from "next/navigation";
 export function DashboardHeader() {
   const pathname = usePathname(); // Get current URL path
 
-  if (pathname === "/auth/login" || pathname === "/auth/forgot-password" || pathname === "/auth/verfiy_email" || pathname === "/auth/reset-password") {
+  if (pathname === "/auth/login" || pathname === "/auth/forgot-password" || pathname === "/auth/verfiy_email" || pathname === "/auth/reset-password" || pathname === "/auth/verfiy_email") {
     return null; // Don't render sidebar for login page
   }
   return (

@@ -415,6 +415,7 @@ function Sidebar() {
     "/auth/forgot-password",
     "/auth/verify_email",
     "/auth/reset-password",
+     "/auth/verfiy_email",
   ];
 
   if (hideSidebarPaths.includes(pathname)) {

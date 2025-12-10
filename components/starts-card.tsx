@@ -1,4 +1,3 @@
-import React from 'react'
 import First from './icon/first'
 import Second from './icon/second'
 import PackageCheck from './icon/thrid'

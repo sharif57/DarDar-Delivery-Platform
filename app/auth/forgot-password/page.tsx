@@ -11,7 +11,7 @@ import { useRouter } from "next/navigation";
 import { useForgotPasswordMutation } from "@/redux/feature/authSlice";
 import { toast } from "sonner";
 
-export default function ForgotPassword() {
+ function ForgotPassword() {
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -39,6 +39,7 @@ export default function ForgotPassword() {
 
     try {
       const response = await forgotPassword({ email }).unwrap();
+      console.log(response, 'responise lj')
 
       toast.success(response?.message || "OTP sent to your email!");
 
@@ -54,7 +55,7 @@ export default function ForgotPassword() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center  px-4">
+    <div className="min-h-screen bg-[#89B12C] flex items-center justify-center p-4">
       <Card className="w-full max-w-md shadow-lg">
         <CardHeader className="text-center space-y-2 pb-6">
           <div className="mx-auto w-16 h-16 bg-[#D69D21]/10 rounded-full flex items-center justify-center mb-4">
@@ -92,7 +93,7 @@ export default function ForgotPassword() {
             <Button
               type="submit"
               disabled={isLoading}
-              className="w-full bg-[#D69D21] hover:bg-[#c08a1d] text-white font-semibold py-6 text-lg transition-all duration-200 disabled:opacity-70"
+            className="w-full bg-[#DD5621] hover:bg-[#DD5621] disabled:bg-[#DD5621]/90 text-white font-semibold py-3 rounded-lg transition duration-200"
             >
               {isLoading ? (
                 <span className="flex items-center gap-2">
@@ -127,10 +128,10 @@ export default function ForgotPassword() {
   );
 }
 
-// export default function Password() {
-//   return (
-//     <Suspense fallback={<div>Loading...</div>}>
-//       <ForgotPassword />
-//     </Suspense>
-//   )
-// }
+export default function Password() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <ForgotPassword />
+    </Suspense>
+  )
+}
